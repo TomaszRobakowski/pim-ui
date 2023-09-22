@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
+import { PriceListRequest } from '../model/priceListRequest';
 
 
 @Injectable({
@@ -9,16 +10,23 @@ import { map } from 'rxjs';
 export class ApiService {
     constructor(private httpClient: HttpClient){}
 
-    public getPriceList() {
+    public isLoading$ = new BehaviorSubject<boolean>(false);
+
+    public getPriceList(request: PriceListRequest) {
+
+        this.isLoading$.next(true);
         const httpHeaders = new HttpHeaders()
-        .set('Content-Type', 'text/csv')
         .set('Cache-Control', 'no-cache');
+
+        const options = {headers: httpHeaders, responseType: 'blob' as 'json'};
 
         //const baseUrl = 'https://localhost:44309/';
         const baseUrl = 'https://webapp-230922040343.azurewebsites.net/';
-        return this.httpClient.get(`${baseUrl}PriceList`, { responseType: 'blob'}).pipe(
-            map(res => {
-                return new Blob([res], { type: 'text/csv', })})
+        return this.httpClient.post<Blob>(`${baseUrl}PriceList`, request, options).pipe(
+                map(res => {
+                    this.isLoading$.next(false);
+                    return new Blob([res], { type: 'text/csv', })
+                })
         );    
     }
 

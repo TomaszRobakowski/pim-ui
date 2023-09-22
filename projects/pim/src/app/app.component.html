@@ -1,1 +1,31 @@
-<button (click)="onClick()">pricelist</button>
+<img src="assets/logo-1643111393.jpg"/>
+<form *ngIf="formGroup" [formGroup]="formGroup">
+    <div class="card flex justify-content-center form-control-container">
+        <span class="p-float-label">
+            <input type="text" pInputText formControlName="userName" />
+            <label for="user">User</label>
+        </span>
+    </div>
+    
+    <div class="card flex justify-content-center form-control-container">
+        <span class="p-float-label">
+            <p-password formControlName="password" [feedback]="false"></p-password>
+            <label for="password">Password</label>
+        </span>
+    </div>
+    
+    <div class="card flex justify-content-center form-control-container">
+        <span class="p-float-label">
+            <input type="text" pInputText formControlName="url" />
+            <label for="url">Url</label>
+        </span>
+    </div>
+    
+    <div class="card flex justify-content-center form-control-container">
+        <p-button label="Get pricelist" (click)="onClick()" [disabled]="!(formGroup && formGroup.valid) || isLoading"></p-button>
+    </div>
+</form>
+
+<div *ngIf="!!isLoading" class="card flex justify-content-center spinner-container">
+    <p-progressSpinner></p-progressSpinner>
+</div>
