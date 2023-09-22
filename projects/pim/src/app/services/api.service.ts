@@ -15,7 +15,7 @@ export class ApiService {
         .set('Cache-Control', 'no-cache');
 
         //const baseUrl = 'https://localhost:44309/';
-        const baseUrl = 'https://webapp-230922040343.azurewebsites.net';
+        const baseUrl = 'https://webapp-230922040343.azurewebsites.net/';
         return this.httpClient.get(`${baseUrl}PriceList`, { responseType: 'blob'}).pipe(
             map(res => {
                 return new Blob([res], { type: 'text/csv', })})
