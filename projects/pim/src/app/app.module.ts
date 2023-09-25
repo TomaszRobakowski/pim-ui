@@ -8,6 +8,9 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
+import { ToastrModule } from 'ngx-toastr';
+import { BannerService } from './services/banner.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -21,9 +24,13 @@ import { AppComponent } from './app.component';
     ReactiveFormsModule,
     InputTextModule,
     ButtonModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-top-center',
+    }),
+    BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [BannerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

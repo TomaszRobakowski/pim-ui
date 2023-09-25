@@ -4,6 +4,7 @@ import { saveAs } from 'file-saver';
 import { getBlobResponseMetaData, getTimestamp } from './extensions';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PriceListRequest } from './model/priceListRequest';
+import { BannerService } from './services/banner.service';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +18,8 @@ export class AppComponent implements OnInit {
   public isLoading = false;
   public isValid = false;
   constructor(private readonly apiService: ApiService,
-    private readonly formBuilder: FormBuilder,){}
+    private readonly formBuilder: FormBuilder,
+    private readonly bannerService: BannerService){}
 
   ngOnInit(): void {
     this.apiService.isLoading$.subscribe(isLoading => {
@@ -37,13 +39,22 @@ export class AppComponent implements OnInit {
       userName: this.formGroup.controls['userName'].value,
       password: this.formGroup.controls['password'].value,
     }
-    this.apiService.getPriceList(request).subscribe(
-      (response: Blob) => {
+    this.apiService.getPriceList(request).subscribe({
+      next: (response: Blob) => {
         const [responseType, extension] = getBlobResponseMetaData(response);
         const fileName =  `PriceList_${getTimestamp()}.${extension}`
         const file = new File([response], fileName, { type: 'text/csv' });
         saveAs(file);
       },
+      error: (e) => {
+        this.apiService.resetLoading();
+        const message = e?.message ?? 'Unexpected error';
+        this.bannerService.error(`${message}, Error`);
+      },
+      complete: () => {
+        
+      }
+    }
     )
   }
 

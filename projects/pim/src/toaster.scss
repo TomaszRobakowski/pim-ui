@@ -1,0 +1,31 @@
+@import '~ngx-toastr/toastr';
+
+.toast-top-center {
+    top: 3rem;
+}
+
+.toast-success {
+  background-color: $success_green;
+}
+
+.toast-error {
+  background-color: $gaspol_red;
+}
+
+.toast-info {
+  background-color: #2F96B4;
+}
+
+.toast-warning {
+  background-color: #F89406;
+}
+
+.toast-message {
+  letter-spacing: 0px;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.toast-container .ngx-toastr {
+    border-radius: 5px 5px 5px 5px;
+}
