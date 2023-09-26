@@ -22,7 +22,8 @@
     </div>
 
     <div class="card flex justify-content-center form-control-container">
-        <p-button label="Get pricelist" (click)="onClick()" [disabled]="!(formGroup && formGroup.valid) || isLoading"></p-button>
+        <p-button icon="pi pi-file-excel" label="Get CSV" (click)="onClick('csv')" [disabled]="!(formGroup && formGroup.valid) || isLoading" ></p-button>
+        <p-button icon="pi pi-list" label="Preprare list" (click)="onClick('list')" [disabled]="!(formGroup && formGroup.valid) || isLoading" class="button"></p-button>
     </div>
 </form>
 

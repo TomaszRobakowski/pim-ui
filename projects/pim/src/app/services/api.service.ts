@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { PriceListRequest } from '../model/priceListRequest';
 import { environment } from '../../environments/environment';
+import { PriceListResponse } from '../model/priceListResponse';
 
 
 @Injectable({
@@ -17,7 +18,7 @@ export class ApiService {
         this.isLoading$.next(false);
     }
 
-    public getPriceList(request: PriceListRequest) {
+    public getPriceListFile(request: PriceListRequest) {
         this.isLoading$.next(true);
         const httpHeaders = new HttpHeaders()
         .set('Cache-Control', 'no-cache');
@@ -30,6 +31,16 @@ export class ApiService {
                     return new Blob([res], { type: 'text/csv', })
                 })
         );    
+    }
+
+    public getPriceList(request: PriceListRequest) {
+        this.isLoading$.next(true);
+        const httpHeaders = new HttpHeaders()
+        .set('Cache-Control', 'no-cache');
+
+        const options = {headers: httpHeaders, responseType: 'blob' as 'json'};
+
+        return this.httpClient.post<PriceListResponse>(`${environment.apiAddress}/PriceList/all`, request, options);
     }
 
 }
