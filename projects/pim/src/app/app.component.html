@@ -20,11 +20,16 @@
             <label for="url">Url</label>
         </span>
     </div>
-    
+
     <div class="card flex justify-content-center form-control-container">
         <p-button label="Get pricelist" (click)="onClick()" [disabled]="!(formGroup && formGroup.valid) || isLoading"></p-button>
     </div>
 </form>
+
+<div class="card flex justify-content-center checkbox-control-container">
+    <p-checkbox [(ngModel)]="storeFormData" [binary]="true" inputId="storeData"></p-checkbox>
+    <label class="label" for="storeData">Store form data</label>
+</div>
 
 <div *ngIf="!!isLoading" class="card flex justify-content-center spinner-container">
     <p-progressSpinner></p-progressSpinner>

@@ -5,3 +5,11 @@
 .spinner-container {
     margin-top: 2rem;
 }
+
+.checkbox-control-container {
+    margin-top: 1rem;
+    .label {
+       color: #AAAAAA !important;
+       margin-left: 0.5rem;
+    }
+}
