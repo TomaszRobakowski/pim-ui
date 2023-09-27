@@ -17,3 +17,11 @@
 .button {
     margin-left: 0.5rem;
 }
+
+.version-container {
+    position: absolute;
+    color: #BBBBBB;
+    top: 55px;
+    left: 121px;
+    font-size: smaller;
+}

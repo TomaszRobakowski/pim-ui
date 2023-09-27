@@ -7,7 +7,8 @@
     "build": "ng build pim",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "predeploy": "npm run build",
+    "version": "node ./projects/pim/src/assets/version/update-build.js",
+    "predeploy": "npm run version & npm run build",
     "deploy": "gh-pages -d build"
   },
   "private": true,
