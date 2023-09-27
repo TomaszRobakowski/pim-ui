@@ -5,10 +5,14 @@
   "projects": {
     "pim": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+                "style": "scss"
+          }
+      },      
       "root": "projects/pim",
       "sourceRoot": "projects/pim/src",
-      "prefix": "app",
+      "prefix": "pim",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",

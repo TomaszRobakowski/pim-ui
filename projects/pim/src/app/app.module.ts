@@ -11,25 +11,23 @@ import { AppComponent } from './app.component';
 import { ToastrModule } from 'ngx-toastr';
 import { BannerService } from './services/banner.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PriceListModule } from './components/price-list/price-list.module';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
+    AppRoutingModule,
     BrowserModule,
     HttpClientModule,
-    PasswordModule,
-    FormsModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    CheckboxModule,
-    ButtonModule,
-    ProgressSpinnerModule,
+   
     ToastrModule.forRoot({
       positionClass: 'toast-top-center',
     }),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    PriceListModule
   ],
   providers: [BannerService],
   bootstrap: [AppComponent]
