@@ -1,53 +1,43 @@
-<form *ngIf="formGroup" [formGroup]="formGroup">
-    <div class="card flex justify-content-center form-control-container">
-        <span class="p-float-label">
-            <input type="text" pInputText formControlName="userName" />
-            <label for="user">User</label>
-        </span>
-    </div>
-    
-    <div class="card flex justify-content-center form-control-container">
-        <span class="p-float-label">
-            <p-password formControlName="password" [feedback]="false"></p-password>
-            <label for="password">Password</label>
-        </span>
-    </div>
-    
-    <div class="card flex justify-content-center form-control-container">
-        <span class="p-float-label">
-            <input type="text" pInputText formControlName="url" />
-            <label for="url">Url</label>
-        </span>
-    </div>
-
-    <div class="card flex justify-content-center form-control-container">
-        <p-button icon="pi pi-file-excel" label="Get CSV" (click)="onClick('csv')" [disabled]="!(formGroup && formGroup.valid) || isLoading" ></p-button>
-        <p-button icon="pi pi-list" label="Preprare list" (click)="onClick('list')" [disabled]="!(formGroup && formGroup.valid) || isLoading" class="button"></p-button>
-    </div>
-</form>
-
-<div class="card flex justify-content-center checkbox-control-container">
-    <p-checkbox [(ngModel)]="storeFormData" [binary]="true" inputId="storeData"></p-checkbox>
-    <label class="label" for="storeData">Store form data</label>
-</div>
-
 <div *ngIf="!!isLoading" class="card flex justify-content-center spinner-container">
     <p-progressSpinner></p-progressSpinner>
 </div>
+<pim-account-data-form *ngIf="!isLoading"
+    (click)="onClick($event)"
+    (storeForm)="onStoreFormChange($event)"
+    [formGroup]="formGroup"
+>
+</pim-account-data-form>
 
-<div class="card">
-    <p-table [columns]="cols" [value]="products" [tableStyle]="{ 'min-width': '50rem' }">
+<div class="card table-container" *ngIf="!isLoading">
+    <p-table 
+        dataKey="productId"
+        [columns]="cols" 
+        [value]="products" 
+        styleClass="p-datatable-striped" 
+        [paginator]="true"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10, 25, 50, 100, 250]"
+    >
         <ng-template pTemplate="header" let-columns>
             <tr>
-                <th *ngFor="let col of columns">
+                <th style="width: 4rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th *ngFor="let col of columns" >
                     {{ col.header }}
                 </th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <ng-template pTemplate="body" let-product let-columns="columns">
             <tr>
+                <td>
+                    <p-tableCheckbox [value]="product"></p-tableCheckbox>
+                </td>
                 <td *ngFor="let col of columns">
-                    {{ rowData[col.field] }}
+                    {{ product[col.field] }}
                 </td>
             </tr>
         </ng-template>

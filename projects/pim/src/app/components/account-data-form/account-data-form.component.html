@@ -1,0 +1,40 @@
+<i class="pi pi-chevron-down chevron" *ngIf="isHide"(click)="isHide=false"></i>
+<i class="pi pi-chevron-up chevron" *ngIf="!isHide"(click)="isHide=true"></i>
+
+<div class="card flex justify-content-center form-control-container">
+    <form *ngIf="formGroup && !isHide" [formGroup]="formGroup" >
+        <div class="card flex justify-content-center form-control-container">
+            <span class="p-float-label">
+                <input type="text" pInputText formControlName="userName" />
+                <label for="user">User</label>
+            </span>
+        </div>
+        
+        <div class="card flex justify-content-center form-control-container">
+            <span class="p-float-label">
+                <p-password formControlName="password" [feedback]="false"></p-password>
+                <label for="password">Password</label>
+            </span>
+        </div>
+        
+        <div class="card flex justify-content-center form-control-container">
+            <span class="p-float-label">
+                <input type="text" pInputText formControlName="url" />
+                <label for="url">Url</label>
+            </span>
+        </div>
+    
+        <div class="card flex justify-content-center form-control-container">
+            <p-button icon="pi pi-file-excel" label="Get CSV" (click)="onClick('csv')" [disabled]="!(formGroup && formGroup.valid)" ></p-button>
+            <p-button icon="pi pi-list" label="Prepare list" (click)="onClick('list')" [disabled]="!(formGroup && formGroup.valid)" class="button"></p-button>
+        </div>
+    </form>
+</div>
+    
+<div *ngIf="!isHide" class="card flex justify-content-center checkbox-control-container">
+        <p-checkbox 
+        [(ngModel)]="storeFormData" 
+        (ngModelChange)="onStoreModelChange()"
+         [binary]="true" inputId="storeData"></p-checkbox>
+        <label class="label" for="storeData">Store form data</label>
+</div>

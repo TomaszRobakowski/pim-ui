@@ -17,14 +17,13 @@ import { Field } from '../../models/field.model';
   styleUrls: ['./price-list.component.scss']
 })
 export class PriceListComponent {
-  public storeFormData = false;
   public formGroup: FormGroup | undefined;
   public isLoading = false;
   public isValid = false;
   public env = environment.production ? '' : ' - local';
-
-  products: Product[] = [];
-  cols: Field[] = [];
+  public products: Product[] = [];
+  public cols: Field[] = [];
+  public storeFormData = false;
 
   private currentUrl: string | undefined;
 
@@ -32,8 +31,6 @@ export class PriceListComponent {
     private readonly formBuilder: FormBuilder,
     private readonly bannerService: BannerService,
     ){}
-
-  
 
   ngOnInit(): void {
     this.currentUrl = `${document.location.protocol}${document.location.hostname}`;
@@ -72,9 +69,15 @@ export class PriceListComponent {
       { field: 'productId', header: 'productId' },
       { field: 'stockId', header: 'stockId' },
     ];
+
+    this.cols = [];
     this.apiService.getPriceList(request).subscribe({
       next: (response: PriceListResponse) => {
         console.log(response);
+        Object.entries(response.products[0]).forEach(([key, value]) => {
+          console.log(key)
+          this.cols.push({ field: `${key}`, header: `${key}` })
+        });
         this.products = response.products;
         this.apiService.resetLoading();
       },
@@ -122,5 +125,8 @@ export class PriceListComponent {
     }
   }
 
+  public onStoreFormChange(storeFormData: boolean) : void {
+    this.storeFormData = storeFormData
+  }
   
 }
