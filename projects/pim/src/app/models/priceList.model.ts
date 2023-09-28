@@ -1,5 +1,4 @@
-export interface Product {
-    variants: Variant[] | null;
+export interface Product extends Variant {
     productId: string | null;
     productCardSubId: string | null;
     stockId: string | null;

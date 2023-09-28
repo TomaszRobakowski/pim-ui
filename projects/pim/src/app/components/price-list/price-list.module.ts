@@ -4,6 +4,8 @@ import { PriceListComponent } from './price-list.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
 import { AccountDataFormModule } from '../account-data-form/account-data-form.module';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   declarations: [
@@ -13,7 +15,9 @@ import { AccountDataFormModule } from '../account-data-form/account-data-form.mo
     CommonModule,
     ProgressSpinnerModule,
     TableModule,
-    AccountDataFormModule
+    AccountDataFormModule,
+    ButtonModule,
+    InputTextModule
   ]
 })
 export class PriceListModule { }

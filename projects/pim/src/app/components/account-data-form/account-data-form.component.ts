@@ -18,6 +18,14 @@ public onClick(action: string) {
   this.click.emit(action);
 }
 
+public hide(): void {
+  this.isHide = true;
+}
+
+public show(): void {
+  this.isHide = false;
+}
+
 public onStoreModelChange() {
   this.storeForm.emit(this.storeFormData);
 }

@@ -1,15 +1,18 @@
 <div *ngIf="!!isLoading" class="card flex justify-content-center spinner-container">
     <p-progressSpinner></p-progressSpinner>
 </div>
+
 <pim-account-data-form *ngIf="!isLoading"
     (click)="onClick($event)"
     (storeForm)="onStoreFormChange($event)"
     [formGroup]="formGroup"
+    [isHide]="isAccountDataFormHidden"
 >
 </pim-account-data-form>
 
-<div class="card table-container" *ngIf="!isLoading">
+<div class="card table-container" *ngIf="!isLoading && isTableVisible">
     <p-table 
+        #dt1
         dataKey="productId"
         [columns]="cols" 
         [value]="products" 
@@ -20,7 +23,18 @@
         [tableStyle]="{ 'min-width': '50rem' }"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         [rowsPerPageOptions]="[10, 25, 50, 100, 250]"
+        [globalFilterFields]="['nameFull', 'country.name', 'representative.name', 'status']"
+
     >
+        <ng-template pTemplate="caption">
+            <div class="flex">
+                <!--button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash" (click)="clear(dt1)"></button-->
+                <span class="p-input-icon-left ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="applyFilterGlobal(dt1, $event, 'contains')" placeholder="Search keyword" />
+                </span>
+            </div>
+        </ng-template>
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th style="width: 4rem">

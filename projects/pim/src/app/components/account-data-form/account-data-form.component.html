@@ -1,6 +1,5 @@
 <i class="pi pi-chevron-down chevron" *ngIf="isHide"(click)="isHide=false"></i>
-<i class="pi pi-chevron-up chevron" *ngIf="!isHide"(click)="isHide=true"></i>
-
+<i id="accountDataFormHide" class="pi pi-chevron-up chevron" *ngIf="!isHide" (click)="isHide=true"></i>
 <div class="card flex justify-content-center form-control-container">
     <form *ngIf="formGroup && !isHide" [formGroup]="formGroup" >
         <div class="card flex justify-content-center form-control-container">

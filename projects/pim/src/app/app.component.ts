@@ -3,6 +3,7 @@ import { VersionModel } from './models/version.model';
 import { ApiService } from './services/api.service';
 import { HttpClient } from '@angular/common/http';
 import { combineLatest, tap } from 'rxjs';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,6 @@ import { combineLatest, tap } from 'rxjs';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  env: any;
   constructor(private readonly apiService: ApiService,
     private readonly httpClient: HttpClient,
     ){}
@@ -18,7 +18,8 @@ export class AppComponent implements OnInit {
   public apiVersion$ = this.apiService.getVersion();
   public version$ = this.httpClient.get<VersionModel>('assets/version/build.json', {responseType: 'json'});
   public version = '';
-    
+  public env = environment.production ? '' : ' - local';
+  
   ngOnInit(): void {
     this.getVersion();
   }

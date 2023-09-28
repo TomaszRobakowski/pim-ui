@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { saveAs } from 'file-saver';
 import { getBlobResponseMetaData, getTimestamp } from '../../extensions';
@@ -10,6 +10,8 @@ import { environment } from '../../../environments/environment';
 import { preparePriceListRequest } from '../../components/price-list/extension';
 import { Product } from '../../models/priceList.model';
 import { Field } from '../../models/field.model';
+import { AccountDataFormComponent } from '../account-data-form/account-data-form.component';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'pim-price-list',
@@ -17,14 +19,17 @@ import { Field } from '../../models/field.model';
   styleUrls: ['./price-list.component.scss']
 })
 export class PriceListComponent {
+
+  @ViewChild('accountDataFormHide') accountDataFormHide: ElementRef | undefined;
+
   public formGroup: FormGroup | undefined;
   public isLoading = false;
   public isValid = false;
-  public env = environment.production ? '' : ' - local';
   public products: Product[] = [];
   public cols: Field[] = [];
   public storeFormData = false;
-
+  public isAccountDataFormHidden = false;
+  public isTableVisible = false;
   private currentUrl: string | undefined;
 
   constructor(private readonly apiService: ApiService,
@@ -62,23 +67,34 @@ export class PriceListComponent {
     }
   }
 
+  public clear(table: Table) {
+    table.clear();
+  }
+  
+  public applyFilterGlobal(table: Table, $event : any, stringVal: string) {
+    table.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
+  }
+
   public onPrepareList(request: PriceListRequest): void {
+    this.isTableVisible = false;
+    this.cols = [];
     this.cols = [
       { field: 'nameFull', header: 'nameFull' },
       { field: 'nameShort', header: 'nameShort' },
       { field: 'productId', header: 'productId' },
       { field: 'stockId', header: 'stockId' },
+      { field: 'priceResaleInclVat', header: 'priceResaleInclVat'}
     ];
 
-    this.cols = [];
     this.apiService.getPriceList(request).subscribe({
       next: (response: PriceListResponse) => {
-        console.log(response);
+        /*console.log(response);
         Object.entries(response.products[0]).forEach(([key, value]) => {
-          console.log(key)
           this.cols.push({ field: `${key}`, header: `${key}` })
-        });
+        });*/
         this.products = response.products;
+        this.showAccountDataFrom();
+        this.isTableVisible = true;
         this.apiService.resetLoading();
       },
       error: (e) => {
@@ -129,4 +145,8 @@ export class PriceListComponent {
     this.storeFormData = storeFormData
   }
   
+  private showAccountDataFrom() {
+    this.isAccountDataFormHidden = true;
+  }
+
 }
