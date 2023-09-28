@@ -3,7 +3,7 @@
 </div>
 
 <pim-account-data-form *ngIf="!isLoading"
-    (click)="onClick($event)"
+    (action)="onClick($event)"
     (storeForm)="onStoreFormChange($event)"
     [formGroup]="formGroup"
     [isHide]="isAccountDataFormHidden"

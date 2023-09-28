@@ -9,13 +9,13 @@ import { FormGroup } from '@angular/forms';
 export class AccountDataFormComponent {
 @Input() formGroup: FormGroup | undefined;
 @Input() isHide = false;
-@Output() click = new EventEmitter<string>();
+@Output() action = new EventEmitter<string>();
 @Output() storeForm = new EventEmitter<boolean>();
 
 public storeFormData = false;
 
 public onClick(action: string) {
-  this.click.emit(action);
+  this.action.emit(action);
 }
 
 public hide(): void {

@@ -6,7 +6,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PriceListRequest } from '../../models/priceListRequest.model';
 import { BannerService } from '../../services/banner.service';
 import { PriceListResponse } from '../../models/priceListResponse.model';
-import { environment } from '../../../environments/environment';
 import { preparePriceListRequest } from '../../components/price-list/extension';
 import { Product } from '../../models/priceList.model';
 import { Field } from '../../models/field.model';
@@ -19,8 +18,6 @@ import { Table } from 'primeng/table';
   styleUrls: ['./price-list.component.scss']
 })
 export class PriceListComponent {
-
-  @ViewChild('accountDataFormHide') accountDataFormHide: ElementRef | undefined;
 
   public formGroup: FormGroup | undefined;
   public isLoading = false;
@@ -49,12 +46,14 @@ export class PriceListComponent {
   }
 
   public onClick(action: string) {
+
     if (!this.formGroup?.valid) {
       return;
     }
+
+    console.log(action)
     const request = preparePriceListRequest(this.formGroup);
     this.saveFormData(request);
-
     switch (action) { 
       case 'csv': 
         this.onGetCsv(request);
