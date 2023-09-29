@@ -23,6 +23,7 @@ export class PriceListComponent {
   public isLoading = false;
   public isValid = false;
   public products: Product[] = [];
+  public selectedProducts: Product[] = [];
   public cols: Field[] = [];
   public storeFormData = false;
   public isAccountDataFormHidden = false;
@@ -51,7 +52,6 @@ export class PriceListComponent {
       return;
     }
 
-    console.log(action)
     const request = preparePriceListRequest(this.formGroup);
     this.saveFormData(request);
     switch (action) { 
@@ -64,6 +64,33 @@ export class PriceListComponent {
       default: 
       return;
     }
+  }
+
+  onCheckboxToggle() {
+    // console.log(this.selectedProducts.length)
+  }
+
+  public saveAsCsv(): void {
+    const header = Object.keys(this.products[0]);
+    let csv = this.selectedProducts.map((row: any) => header.map(fieldName => JSON.stringify(row[fieldName])).join('\t'));
+    csv.unshift(header.join('\t'));
+    let csvArray = csv.join('\r\n');
+
+    var blob = new Blob([csvArray], {type: 'text/csv' })
+    const fileName = `productsPriceList_${this.selectedProducts.length}_${Date.now().toString()}.csv`
+    saveAs(blob, fileName);
+  }
+
+  public saveAllAsCsv(): void {
+    // table.exportCSV();
+    const header = Object.keys(this.products[0]);
+    let csv = this.products.map((row: any) => header.map(fieldName => JSON.stringify(row[fieldName])).join('\t'));
+    csv.unshift(header.join('\t'));
+    let csvArray = csv.join('\r\n');
+
+    var blob = new Blob([csvArray], {type: 'text/csv' })
+    const fileName = `productsPriceList_all_${Date.now().toString()}.csv`
+    saveAs(blob, fileName);
   }
 
   public clear(table: Table) {
