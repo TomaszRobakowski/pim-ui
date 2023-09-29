@@ -1,5 +1,5 @@
 import { FormGroup } from "@angular/forms";
-import { PriceListRequest } from "../../models/priceListRequest.model";
+import { PriceListRequest } from "../models/priceListRequest.model";
 
 export function preparePriceListRequest(formGroup: FormGroup): PriceListRequest {
     return {

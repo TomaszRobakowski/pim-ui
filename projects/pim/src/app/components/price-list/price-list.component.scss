@@ -4,4 +4,11 @@
 
 .p-button-outlined {
     margin-right: 0.5rem;
+    &--left {
+        margin-left: 0.5rem;
+    }
+}
+
+.table-container {
+    margin-top: 1rem;
 }

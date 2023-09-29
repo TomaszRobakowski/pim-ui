@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { environment } from 'projects/pim/src/environments/environment';
 
 @Component({
   selector: 'pim-account-data-form',
@@ -13,6 +14,7 @@ export class AccountDataFormComponent {
 @Output() storeForm = new EventEmitter<boolean>();
 
 public storeFormData = false;
+public isProduction = environment.production;
 
 public onClick(action: string) {
   this.action.emit(action);

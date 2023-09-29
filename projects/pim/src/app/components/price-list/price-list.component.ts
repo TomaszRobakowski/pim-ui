@@ -1,16 +1,16 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { saveAs } from 'file-saver';
-import { getBlobResponseMetaData, getTimestamp } from '../../extensions';
+import { getBlobResponseMetaData, getTimestamp } from '../../extensions/fileExtensions';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PriceListRequest } from '../../models/priceListRequest.model';
 import { BannerService } from '../../services/banner.service';
 import { PriceListResponse } from '../../models/priceListResponse.model';
-import { preparePriceListRequest } from '../../components/price-list/extension';
 import { Product } from '../../models/priceList.model';
 import { Field } from '../../models/field.model';
-import { AccountDataFormComponent } from '../account-data-form/account-data-form.component';
 import { Table } from 'primeng/table';
+import { preparePriceListRequest } from '../../extensions/preparePriceListRequest';
+import { saveDataArrayToFile } from '../../extensions/saveDataArrayToFile';
 
 @Component({
   selector: 'pim-price-list',
@@ -47,7 +47,6 @@ export class PriceListComponent {
   }
 
   public onClick(action: string) {
-
     if (!this.formGroup?.valid) {
       return;
     }
@@ -61,6 +60,11 @@ export class PriceListComponent {
       case 'list':
         this.onPrepareList(request);
       break;
+      case 'test':
+        this.cols = this.getTableColumns();
+        this.products = [];
+        this.isTableVisible = true;
+      break;
       default: 
       return;
     }
@@ -70,27 +74,12 @@ export class PriceListComponent {
     // console.log(this.selectedProducts.length)
   }
 
-  public saveAsCsv(): void {
-    const header = Object.keys(this.products[0]);
-    let csv = this.selectedProducts.map((row: any) => header.map(fieldName => JSON.stringify(row[fieldName])).join('\t'));
-    csv.unshift(header.join('\t'));
-    let csvArray = csv.join('\r\n');
-
-    var blob = new Blob([csvArray], {type: 'text/csv' })
-    const fileName = `productsPriceList_${this.selectedProducts.length}_${Date.now().toString()}.csv`
-    saveAs(blob, fileName);
+  public saveSelectedAsCsv(): void {
+    saveDataArrayToFile(this.selectedProducts);
   }
 
   public saveAllAsCsv(): void {
-    // table.exportCSV();
-    const header = Object.keys(this.products[0]);
-    let csv = this.products.map((row: any) => header.map(fieldName => JSON.stringify(row[fieldName])).join('\t'));
-    csv.unshift(header.join('\t'));
-    let csvArray = csv.join('\r\n');
-
-    var blob = new Blob([csvArray], {type: 'text/csv' })
-    const fileName = `productsPriceList_all_${Date.now().toString()}.csv`
-    saveAs(blob, fileName);
+    saveDataArrayToFile(this.products);
   }
 
   public clear(table: Table) {
@@ -103,21 +92,10 @@ export class PriceListComponent {
 
   public onPrepareList(request: PriceListRequest): void {
     this.isTableVisible = false;
-    this.cols = [];
-    this.cols = [
-      { field: 'nameFull', header: 'nameFull' },
-      { field: 'nameShort', header: 'nameShort' },
-      { field: 'productId', header: 'productId' },
-      { field: 'stockId', header: 'stockId' },
-      { field: 'priceResaleInclVat', header: 'priceResaleInclVat'}
-    ];
+    this.cols = this.getTableColumns();
 
     this.apiService.getPriceList(request).subscribe({
       next: (response: PriceListResponse) => {
-        /*console.log(response);
-        Object.entries(response.products[0]).forEach(([key, value]) => {
-          this.cols.push({ field: `${key}`, header: `${key}` })
-        });*/
         this.products = response.products;
         this.showAccountDataFrom();
         this.isTableVisible = true;
@@ -129,8 +107,7 @@ export class PriceListComponent {
         this.bannerService.error(`${message}, Error`);
       },
       complete: () => {}
-    }
-    )
+    });
   }
 
   public onGetCsv(request: PriceListRequest): void {
@@ -150,6 +127,10 @@ export class PriceListComponent {
     })
   }
 
+  public onStoreFormChange(storeFormData: boolean) : void {
+    this.storeFormData = storeFormData
+  }
+
   private formInit(): void {
     const storeData = localStorage.getItem(`${this.currentUrl}`);
     const formData: PriceListRequest | null = storeData ? JSON.parse(storeData) : null ;
@@ -166,13 +147,19 @@ export class PriceListComponent {
       localStorage.setItem(`${this.currentUrl}`, JSON.stringify(request));
     }
   }
-
-  public onStoreFormChange(storeFormData: boolean) : void {
-    this.storeFormData = storeFormData
-  }
   
   private showAccountDataFrom() {
     this.isAccountDataFormHidden = true;
   }
+
+  private getTableColumns(): Field[]{
+    return [
+      { field: 'nameFull', header: 'nameFull' },
+      { field: 'nameShort', header: 'nameShort' },
+      { field: 'productId', header: 'productId' },
+      { field: 'stockId', header: 'stockId' },
+      { field: 'priceResaleInclVat', header: 'priceResaleInclVat'}
+    ];
+  };
 
 }

@@ -23,7 +23,7 @@ export function getBlobResponseMetaData(response: unknown): [string, string] {
     return [type, extension];
   }
 
-  export function getTimestamp(): string {
+export function getTimestamp(): string {
     const today = new Date();
     return `${today.getDate()}-${today.getMonth()}-${today.getFullYear()}-${today.getSeconds()}${today.getMilliseconds()}`;
 }
