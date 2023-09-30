@@ -6,6 +6,7 @@ import { TableModule } from 'primeng/table';
 import { AccountDataFormModule } from '../account-data-form/account-data-form.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
+import { SettingsModule } from '../settings/settings.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { ButtonModule } from 'primeng/button';
     TableModule,
     AccountDataFormModule,
     ButtonModule,
-    InputTextModule
+    InputTextModule,
+    SettingsModule
   ]
 })
 export class PriceListModule { }

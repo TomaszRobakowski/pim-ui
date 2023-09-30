@@ -11,11 +11,15 @@ import { Field } from '../../models/field.model';
 import { Table } from 'primeng/table';
 import { preparePriceListRequest } from '../../extensions/preparePriceListRequest';
 import { saveDataArrayToFile } from '../../extensions/saveDataArrayToFile';
+import { getMockProducts } from './price-list.mock';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ColumnSettingsComponent } from '../settings/column-settings/column-settings.component';
 
 @Component({
   selector: 'pim-price-list',
   templateUrl: './price-list.component.html',
-  styleUrls: ['./price-list.component.scss']
+  styleUrls: ['./price-list.component.scss'],
+  providers: [DialogService]
 })
 export class PriceListComponent {
 
@@ -29,10 +33,12 @@ export class PriceListComponent {
   public isAccountDataFormHidden = false;
   public isTableVisible = false;
   private currentUrl: string | undefined;
+  private dialog: DynamicDialogRef | undefined;
 
   constructor(private readonly apiService: ApiService,
     private readonly formBuilder: FormBuilder,
     private readonly bannerService: BannerService,
+    public dialogService: DialogService
     ){}
 
   ngOnInit(): void {
@@ -44,6 +50,18 @@ export class PriceListComponent {
         this.formInit();
       }
     });
+  }
+
+  public columnSettings(): void {
+    const columns = this.getColumnNameByData(this.products[0]); 
+    console.log(columns)
+    this.dialog = this.dialogService.open(ColumnSettingsComponent, 
+      { header: 'Column configuration',
+        data: {
+          columns: columns
+        },
+      }
+    );
   }
 
   public onClick(action: string) {
@@ -62,7 +80,7 @@ export class PriceListComponent {
       break;
       case 'test':
         this.cols = this.getTableColumns();
-        this.products = [];
+        this.products = getMockProducts();
         this.isTableVisible = true;
       break;
       default: 
@@ -162,4 +180,11 @@ export class PriceListComponent {
     ];
   };
 
+  private getColumnNameByData(product: Product): string[] {
+    const result: string[] = []
+    Object.entries(product).forEach(([key, value]) => {
+      result.push(`${key}`)
+    });
+    return result;
+  }
 }

@@ -1,0 +1,26 @@
+<div class="card" *ngIf="sourceColumns">
+    <p-pickList 
+        [source]="sourceColumns" 
+        [target]="targetColumns" 
+        sourceHeader="Available" 
+        targetHeader="Selected" 
+        [dragdrop]="true" 
+        [responsive]="true" 
+        [sourceStyle]="{ height: '30rem' }"
+        [targetStyle]="{ height: '30rem' }" 
+        sourceFilterPlaceholder="Search by name" 
+        targetFilterPlaceholder="Search by name" 
+        breakpoint="1400px">
+        <ng-template let-column pTemplate="item">
+            <div class="flex flex-wrap p-2 align-items-center gap-3">
+                <div class="flex-1 flex flex-column gap-2">
+                    <span class="font-bold">{{column}}</span>
+                    <!--div class="flex align-columns-center gap-2">
+                        <i class="pi pi-tag text-sm"></i>
+                        <span>{{column}}</span>
+                    </div-->
+                </div>
+            </div>
+        </ng-template>
+    </p-pickList>
+</div>

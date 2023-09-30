@@ -45,7 +45,11 @@
                     <i class="pi pi-search"></i>
                     <input pInputText type="text" (input)="applyFilterGlobal(dt1, $event, 'contains')" placeholder="Search keyword" />
                 </span>
-                <button pButton class="p-button-outlined p-button-outlined--left" icon="pi pi-cog">
+                <button pButton 
+                    class="p-button-outlined p-button-outlined--left" 
+                    icon="pi pi-cog"
+                    (click)="columnSettings()"
+                    >
                 </button>
             </div>
         </ng-template>
