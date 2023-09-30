@@ -6,8 +6,8 @@
         targetHeader="Selected" 
         [dragdrop]="true" 
         [responsive]="true" 
-        [sourceStyle]="{ height: '30rem' }"
-        [targetStyle]="{ height: '30rem' }" 
+        [sourceStyle]="{ height: '30rem', width: '20rem' }"
+        [targetStyle]="{ height: '30rem', width: '20rem' }" 
         sourceFilterPlaceholder="Search by name" 
         targetFilterPlaceholder="Search by name" 
         breakpoint="1400px">
@@ -23,4 +23,10 @@
             </div>
         </ng-template>
     </p-pickList>
+    <button pButton 
+        class="p-button-outlined" 
+        icon="pi pi-save"
+        (click)="save()"
+        >
+    </button>
 </div>

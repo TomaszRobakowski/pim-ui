@@ -12,7 +12,7 @@ import { Table } from 'primeng/table';
 import { preparePriceListRequest } from '../../extensions/preparePriceListRequest';
 import { saveDataArrayToFile } from '../../extensions/saveDataArrayToFile';
 import { getMockProducts } from './price-list.mock';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ColumnSettingsComponent } from '../settings/column-settings/column-settings.component';
 
 @Component({
@@ -28,7 +28,7 @@ export class PriceListComponent {
   public isValid = false;
   public products: Product[] = [];
   public selectedProducts: Product[] = [];
-  public cols: Field[] = [];
+  public tableColumns: Field[] = [];
   public storeFormData = false;
   public isAccountDataFormHidden = false;
   public isTableVisible = false;
@@ -53,15 +53,8 @@ export class PriceListComponent {
   }
 
   public columnSettings(): void {
-    const columns = this.getColumnNameByData(this.products[0]); 
-    console.log(columns)
-    this.dialog = this.dialogService.open(ColumnSettingsComponent, 
-      { header: 'Column configuration',
-        data: {
-          columns: columns
-        },
-      }
-    );
+    this.dialog = this.dialogService.open(ColumnSettingsComponent, this.getDynamicDialogConfig());
+    this.dialog.onClose.subscribe((response) => this.actionAfterCloseSettings(response));
   }
 
   public onClick(action: string) {
@@ -79,7 +72,7 @@ export class PriceListComponent {
         this.onPrepareList(request);
       break;
       case 'test':
-        this.cols = this.getTableColumns();
+        this.tableColumns = this.getTableColumns();
         this.products = getMockProducts();
         this.isTableVisible = true;
       break;
@@ -110,7 +103,7 @@ export class PriceListComponent {
 
   public onPrepareList(request: PriceListRequest): void {
     this.isTableVisible = false;
-    this.cols = this.getTableColumns();
+    this.tableColumns = this.getTableColumns();
 
     this.apiService.getPriceList(request).subscribe({
       next: (response: PriceListResponse) => {
@@ -171,6 +164,10 @@ export class PriceListComponent {
   }
 
   private getTableColumns(): Field[]{
+    const storedColumns = localStorage.getItem(`${this.currentUrl}.columns`);
+    if (storedColumns)
+      return JSON.parse(storedColumns);
+
     return [
       { field: 'nameFull', header: 'nameFull' },
       { field: 'nameShort', header: 'nameShort' },
@@ -187,4 +184,24 @@ export class PriceListComponent {
     });
     return result;
   }
+
+  private getDynamicDialogConfig(): DynamicDialogConfig {
+    const targetColumns = this.tableColumns.map(column => column.field);
+    return       { 
+      header: 'Column configuration',
+      data: {
+        columns: this.getColumnNameByData(this.products[0]).filter(column => !targetColumns.includes(column)),
+        target: targetColumns
+      },
+    }
+  }
+
+  private actionAfterCloseSettings(response: string[]) {
+    const columns: Field[] = [];
+    response.forEach(name => columns.push({ field: `${name}`, header: `${name}`}));
+    this.tableColumns = columns;
+
+    localStorage.setItem(`${this.currentUrl}.columns`, JSON.stringify(columns));
+  }
+
 }

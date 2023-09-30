@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ColumnSettingsComponent } from './column-settings/column-settings.component';
 import { PickListModule } from 'primeng/picklist';
+import { ButtonModule } from 'primeng/button';
 
 
 
@@ -11,7 +12,8 @@ import { PickListModule } from 'primeng/picklist';
   ],
   imports: [
     CommonModule,
-    PickListModule
+    PickListModule,
+    ButtonModule
   ],
   exports: [
     ColumnSettingsComponent
