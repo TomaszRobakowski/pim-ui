@@ -13,7 +13,7 @@
 <div class="card table-container" *ngIf="!isLoading && isTableVisible">
     <p-table 
         #dt1
-        dataKey="productId"
+        dataKey="barcode"
         [columns]="tableColumns" 
         [value]="products" 
         styleClass="p-datatable-striped" 
