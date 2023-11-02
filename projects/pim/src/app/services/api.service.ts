@@ -33,6 +33,23 @@ export class ApiService {
         );    
     }
 
+    public getDirectPriceList(request: PriceListRequest) {
+    const hash = btoa(`${request.userName}:${request.password}`); 
+
+        this.isLoading$.next(true);
+        const httpHeaders = new HttpHeaders()
+        .set('Content-Type', 'application/json')
+        .set('Cache-Control', 'no-cache')
+        .set('Authorization', `Basic ${hash}`)
+        //.set('Authorization', 'Basic MzY2NjM2MjQzOndzNjkwMw==')
+        .set('Access-Control-Allow-Headers', 'Content-Type')
+        .set('Access-Control-Allow-Methods', 'GET')
+        .set('Access-Control-Allow-Origin', '*');
+        const options = {headers: httpHeaders};
+
+        return this.httpClient.get<PriceListResponse>(`https://${request.url}/api/v2/products`, options);
+    }
+
     public getPriceList(request: PriceListRequest) {
         this.isLoading$.next(true);
         const httpHeaders = new HttpHeaders()

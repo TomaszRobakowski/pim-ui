@@ -71,6 +71,9 @@ export class PriceListComponent {
       case 'list':
         this.onPrepareList(request);
       break;
+      case 'direct':
+        this.onGetDirectList(request);
+      break;
       case 'test':
         this.tableColumns = this.getTableColumns();
         this.products = getMockProducts();
@@ -99,6 +102,27 @@ export class PriceListComponent {
   
   public applyFilterGlobal(table: Table, $event : any, stringVal: string) {
     table.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
+  }
+
+
+  public onGetDirectList(request: PriceListRequest): void {
+    this.isTableVisible = false;
+    this.tableColumns = this.getTableColumns();
+
+    this.apiService.getDirectPriceList(request).subscribe({
+      next: (response: PriceListResponse) => {
+        this.products = response.products;
+        this.showAccountDataFrom();
+        this.isTableVisible = true;
+        this.apiService.resetLoading();
+      },
+      error: (e) => {
+        this.apiService.resetLoading();
+        const message = e?.message ?? 'Unexpected error';
+        this.bannerService.error(`${message}, Error`);
+      },
+      complete: () => {}
+    });
   }
 
   public onPrepareList(request: PriceListRequest): void {
