@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, map } from 'rxjs';
 import { PriceListRequest } from '../models/priceListRequest.model';
 import { environment } from '../../environments/environment';
 import { PriceListResponse } from '../models/priceListResponse.model';
+import { PriceListPageRequest } from '../models/priceListPageRequest.model';
 
 
 @Injectable({
@@ -58,7 +59,12 @@ export class ApiService {
 
         const options = {headers: httpHeaders};
 
-        return this.httpClient.post<PriceListResponse>(`${environment.apiAddress}/PriceList/all`, request, options);
+        const req: PriceListPageRequest = {
+            pageSize: 100,
+            tableContinuationToken: {}
+        };
+        //return this.httpClient.post<PriceListResponse>(`${environment.apiAddress}/PriceList/all`, request, options);
+        return this.httpClient.post<PriceListResponse>(`${environment.apiAddress}/PriceList/page`, req, options);
     }
 
     public getVersion() : Observable<any> {
