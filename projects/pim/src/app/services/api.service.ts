@@ -5,6 +5,7 @@ import { PriceListRequest } from '../models/priceListRequest.model';
 import { environment } from '../../environments/environment';
 import { PriceListResponse } from '../models/priceListResponse.model';
 import { PriceListPageRequest } from '../models/priceListPageRequest.model';
+import { PriceListFilteredRequest } from '../models/PriceListFilteredRequest';
 
 
 @Injectable({
@@ -32,6 +33,24 @@ export class ApiService {
             password: 'ws6903'
         }
         return this.httpClient.post<Blob>(`${environment.apiAddress}/PriceList`, request, options).pipe(
+                map(res => {
+                    this.isLoading$.next(false);
+                    return new Blob([res], { type: 'text/csv', })
+                })
+        );    
+    }
+
+    public getCsvForSelectedProducts(productIds: (string | null)[]) {
+        this.isLoading$.next(true);
+        const httpHeaders = new HttpHeaders()
+        .set('Cache-Control', 'no-cache');
+
+        const options = {headers: httpHeaders, responseType: 'blob' as 'json'};
+
+        const request: PriceListFilteredRequest = {
+            ids: productIds
+        }
+        return this.httpClient.post<Blob>(`${environment.apiAddress}/PriceList/GetPriceListAsFilteredCsv`, request, options).pipe(
                 map(res => {
                     this.isLoading$.next(false);
                     return new Blob([res], { type: 'text/csv', })

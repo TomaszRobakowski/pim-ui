@@ -116,11 +116,16 @@ export class PriceListComponent {
   }
 
   onCheckboxToggle() {
-    // console.log(this.selectedProducts.length)
+     console.log(this.selectedProducts)
   }
 
   public saveSelectedAsCsv(): void {
-    saveDataArrayToFile(this.selectedProducts);
+    //saveDataArrayToFile(this.selectedProducts);
+    const ids = this.selectedProducts.map(product => product.id);
+    if (ids){
+      this.apiService.getCsvForSelectedProducts(ids).subscribe();
+    }
+    
   }
 
   public saveAllAsCsv(): void {
