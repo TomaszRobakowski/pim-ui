@@ -49,17 +49,20 @@
                     class="p-button-outlined" icon="pi pi-file-excel" 
                     (click)="saveSelectedAsCsv() ">
                 </button-->
-                <span class="p-input-icon-left ml-auto">
-                    <i class="pi pi-search"></i>
-                    <!--input pInputText type="text" (input)="applyFilterGlobal(dt1, $event, 'contains')" placeholder="Search keyword" /-->
-                    <input pInputText type="text" (input)="applyFilter($event)" placeholder="Search keyword" [value]="searchString" />
+                <span class="p-input-icon-right ml-auto">
+                    <i class="pi pi-times-circle clear-button" (click)="clearSearch()"></i>
+                    <input pInputText type="text" 
+                        (keyup.enter)="search()"
+                        (input)="applyFilter($event)" 
+                        placeholder="Search keyword" 
+                        [value]="searchString" />
                 </span>
-                <button pButton 
+                <!--button pButton 
                     class="p-button-outlined p-button-outlined--left" 
                     icon="pi pi-search"
                     (click)="search()"
                     >
-                </button>
+                </button-->
                 <button pButton 
                     class="p-button-outlined p-button-outlined--left" 
                     icon="pi pi-cog"

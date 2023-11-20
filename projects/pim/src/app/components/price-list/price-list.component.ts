@@ -143,10 +143,18 @@ export class PriceListComponent {
     return !!this.searchString.trim() ? `NameShort ge '${this.searchString}' and NameShort lt '${this.searchString}Z'` : null;
   }
 
+  public clearSearch(): void {
+    if (this.searchString.trim() === '') {
+      return;
+    }
+    this.searchString = '';
+    this.search();
+  }
+
   public search(): void {
+    const request : PriceListPageRequest = {pageSize: 100, continuationToken: {}, search: this.getSearchQuery()};
     this.tableContinuationTokens = ['{}'];
     this.currentTokenIndex = 0;
-    const request : PriceListPageRequest = {pageSize: 100, continuationToken: {}, search: this.getSearchQuery()};
     this.onPrepareListByPage(request)
   }
 
