@@ -14,6 +14,7 @@ import { saveDataArrayToFile } from '../../extensions/saveDataArrayToFile';
 import { getMockProducts } from './price-list.mock';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ColumnSettingsComponent } from '../settings/column-settings/column-settings.component';
+import { PriceListPageRequest, TableContinuationToken } from '../../models/priceListPageRequest.model';
 
 @Component({
   selector: 'pim-price-list',
@@ -30,11 +31,14 @@ export class PriceListComponent {
   public selectedProducts: Product[] = [];
   public tableColumns: Field[] = [];
   public storeFormData = false;
-  public isAccountDataFormHidden = false;
+  public isAccountDataFormHidden = true;
+  public tableContinuationTokens: string[] = ['{}'];
+  public currentTokenIndex = 0;
   public isTableVisible = false;
+  public isLastPage = false;
   private currentUrl: string | undefined;
   private dialog: DynamicDialogRef | undefined;
-
+  private searchString: string = '';
   constructor(private readonly apiService: ApiService,
     private readonly formBuilder: FormBuilder,
     private readonly bannerService: BannerService,
@@ -42,14 +46,32 @@ export class PriceListComponent {
     ){}
 
   ngOnInit(): void {
-    this.currentUrl = `${document.location.protocol}${document.location.hostname}`;
+    if (this.products.length === 0){
+      this.pageChange('first');
+    }
+    
+    //this.currentUrl = `${document.location.protocol}${document.location.hostname}`;
 
-    this.apiService.isLoading$.subscribe(isLoading => {
-      this.isLoading = isLoading;
-      if (!isLoading) {
-        this.formInit();
-      }
-    });
+    this.onIsLoadingChange();
+  }
+
+  
+  pageChange(page: string) {
+    const request : PriceListPageRequest = {pageSize: 100, continuationToken: {}}
+    switch (page) {
+      case 'next':
+        this.currentTokenIndex++;
+        break;
+      case 'previous':
+        this.currentTokenIndex--;
+        break;
+      default :
+      this.currentTokenIndex = 0;
+    }    
+
+    request.continuationToken = this.getTokenByIndex(this.currentTokenIndex);
+
+    this.onPrepareListByPage(request)
   }
 
   public columnSettings(): void {
@@ -66,7 +88,7 @@ export class PriceListComponent {
     this.saveFormData(request);
     switch (action) { 
       case 'csv': 
-        this.onGetCsv(request);
+        this.onGetCsv();
       break;
       case 'list':
         this.onPrepareList(request);
@@ -104,6 +126,15 @@ export class PriceListComponent {
     table.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
+  public applyFilter( $event : any) {
+    const search = ($event.target as HTMLInputElement).value;
+    this.searchString = `NameShort ge '${search}' and NameShort lt '${search}Z'`
+  }
+
+  public search(): void {
+    const request : PriceListPageRequest = {pageSize: 100, continuationToken: {}, search: this.searchString}
+    this.onPrepareListByPage(request)
+  }
 
   public onGetDirectList(request: PriceListRequest): void {
     this.isTableVisible = false;
@@ -145,8 +176,29 @@ export class PriceListComponent {
     });
   }
 
-  public onGetCsv(request: PriceListRequest): void {
-    this.apiService.getPriceListFile(request).subscribe({
+  public onPrepareListByPage(request: PriceListPageRequest): void {
+    this.isTableVisible = false;
+    this.tableColumns = this.getTableColumns();
+
+    this.apiService.getPriceListByPage(request).subscribe({
+      next: (response: PriceListResponse) => {
+        this.products = response.products;
+        this.updateContinuationToken(response.continuationToken)
+        this.showAccountDataFrom();
+        this.isTableVisible = true;
+        this.apiService.resetLoading();
+      },
+      error: (e) => {
+        this.apiService.resetLoading();
+        const message = e?.message ?? 'Unexpected error';
+        this.bannerService.error(`${message}, Error`);
+      },
+      complete: () => {}
+    });
+  }
+
+  public onGetCsv(): void {
+    this.apiService.getPriceListFile().subscribe({
       next: (response: Blob) => {
         const [responseType, extension] = getBlobResponseMetaData(response);
         const fileName =  `PriceList_${getTimestamp()}.${extension}`
@@ -226,6 +278,32 @@ export class PriceListComponent {
     this.tableColumns = columns;
 
     localStorage.setItem(`${this.currentUrl}.columns`, JSON.stringify(columns));
+  }
+
+  private updateContinuationToken(continuationToken: TableContinuationToken) {
+    if (continuationToken === null) {
+      this.isLastPage = true;
+      return;
+    }
+    this.isLastPage = false;
+    const serializedToken = JSON.stringify(continuationToken)
+    const index = this.tableContinuationTokens.indexOf(serializedToken);
+    if (index < 0 ) {
+      this.tableContinuationTokens.push(serializedToken);
+    }
+  }
+
+  private getTokenByIndex(currentTokenIndex: number): TableContinuationToken {
+    return JSON.parse(this.tableContinuationTokens[currentTokenIndex]);
+  }
+
+  private onIsLoadingChange(){
+    this.apiService.isLoading$.subscribe(isLoading => {
+      this.isLoading = isLoading;
+      if (!isLoading) {
+        this.formInit();
+      }
+    });
   }
 
 }

@@ -2,13 +2,13 @@
     <p-progressSpinner></p-progressSpinner>
 </div>
 
-<pim-account-data-form *ngIf="!isLoading"
+<!--pim-account-data-form *ngIf="!isLoading"
     (action)="onClick($event)"
     (storeForm)="onStoreFormChange($event)"
     [formGroup]="formGroup"
     [isHide]="isAccountDataFormHidden"
 >
-</pim-account-data-form>
+</pim-account-data-form-->
 
 <div class="card table-container" *ngIf="!isLoading && isTableVisible">
     <p-table 
@@ -17,34 +17,49 @@
         [columns]="tableColumns" 
         [value]="products" 
         styleClass="p-datatable-striped" 
-        [paginator]="true"
-        [rows]="10"
+        [rows]="50"
         [showCurrentPageReport]="true"
         [tableStyle]="{ 'min-width': '50rem' }"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        [rowsPerPageOptions]="[10, 25, 50, 100, 250]"
         [globalFilterFields]="['nameFull', 'country.name', 'representative.name', 'status']"
         [(selection)]="selectedProducts"
         (onHeaderCheckboxToggle)="onCheckboxToggle()"
         (onRowSelect)="onCheckboxToggle()"
         (onRowUnselect)="onCheckboxToggle()"
+        (onPage)="pageChange($event)"
     >
         <ng-template pTemplate="caption">
             <div class="flex">
                 <button pButton 
-                    label="Export ALL ({{products.length}}) to CSV" 
+                    label="Export ALL to CSV" 
+                    class="p-button-outlined" icon="pi pi-file-excel" 
+                    (click)="onGetCsv()">
+                </button>
+                <pim-paginator (pageChange)="pageChange($event)" 
+                    [index]="currentTokenIndex"
+                    [isLastPage]="isLastPage"
+                    ></pim-paginator>
+                <!--button pButton 
+                    label="Export ALL to CSV" 
                     class="p-button-outlined" icon="pi pi-file-excel" 
                     (click)="saveAllAsCsv()">
-                </button>
-                <button *ngIf="selectedProducts.length > 0" pButton 
+                </button-->
+                <!--button *ngIf="selectedProducts.length > 0" pButton 
                     label="Export to CSV ({{selectedProducts.length}})" 
                     class="p-button-outlined" icon="pi pi-file-excel" 
                     (click)="saveSelectedAsCsv() ">
-                </button>
+                </button-->
                 <span class="p-input-icon-left ml-auto">
                     <i class="pi pi-search"></i>
-                    <input pInputText type="text" (input)="applyFilterGlobal(dt1, $event, 'contains')" placeholder="Search keyword" />
+                    <!--input pInputText type="text" (input)="applyFilterGlobal(dt1, $event, 'contains')" placeholder="Search keyword" /-->
+                    <input pInputText type="text" (input)="applyFilter($event)" placeholder="Search keyword" />
                 </span>
+                <button pButton 
+                    class="p-button-outlined p-button-outlined--left" 
+                    icon="pi pi-search"
+                    (click)="search()"
+                    >
+                </button>
                 <button pButton 
                     class="p-button-outlined p-button-outlined--left" 
                     icon="pi pi-cog"
@@ -74,4 +89,11 @@
             </tr>
         </ng-template>
     </p-table>
+  
 </div>
+
+<pim-paginator *ngIf="!isLoading && isTableVisible" 
+    [index]="currentTokenIndex"
+    [isLastPage]="isLastPage"
+    (pageChange)="pageChange($event)">
+</pim-paginator>

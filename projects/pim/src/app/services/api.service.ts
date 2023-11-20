@@ -19,13 +19,18 @@ export class ApiService {
         this.isLoading$.next(false);
     }
 
-    public getPriceListFile(request: PriceListRequest) {
+    public getPriceListFile() {
         this.isLoading$.next(true);
         const httpHeaders = new HttpHeaders()
         .set('Cache-Control', 'no-cache');
 
         const options = {headers: httpHeaders, responseType: 'blob' as 'json'};
 
+        const request: PriceListRequest = {
+            userName: '366636243',
+            url: 'cyklo.aspire.cz',
+            password: 'ws6903'
+        }
         return this.httpClient.post<Blob>(`${environment.apiAddress}/PriceList`, request, options).pipe(
                 map(res => {
                     this.isLoading$.next(false);
@@ -51,6 +56,18 @@ export class ApiService {
         return this.httpClient.get<PriceListResponse>(`https://${request.url}/api/v2/products`, options);
     }
 
+    public getPriceListByPage(request: PriceListPageRequest) {
+        this.isLoading$.next(true);
+        const httpHeaders = new HttpHeaders()
+        .set('Content-Type', 'application/json')
+        .set('Cache-Control', 'no-cache');
+
+        const options = {headers: httpHeaders};
+
+        return this.httpClient.post<PriceListResponse>(`${environment.apiAddress}/PriceList/page`, request, options);
+    }
+
+
     public getPriceList(request: PriceListRequest) {
         this.isLoading$.next(true);
         const httpHeaders = new HttpHeaders()
@@ -59,12 +76,7 @@ export class ApiService {
 
         const options = {headers: httpHeaders};
 
-        const req: PriceListPageRequest = {
-            pageSize: 100,
-            tableContinuationToken: {}
-        };
-        //return this.httpClient.post<PriceListResponse>(`${environment.apiAddress}/PriceList/all`, request, options);
-        return this.httpClient.post<PriceListResponse>(`${environment.apiAddress}/PriceList/page`, req, options);
+        return this.httpClient.post<PriceListResponse>(`${environment.apiAddress}/PriceList/all`, request, options);
     }
 
     public getVersion() : Observable<any> {

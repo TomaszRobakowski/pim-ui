@@ -1,7 +1,8 @@
 export interface PriceListPageRequest {
     pageSize?: number;
     pageNumber?: number;
-    tableContinuationToken?: TableContinuationToken
+    continuationToken?: TableContinuationToken;
+    search?: string;
 }
 
 export interface TableContinuationToken {

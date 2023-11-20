@@ -7,10 +7,12 @@ import { AccountDataFormModule } from '../account-data-form/account-data-form.mo
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SettingsModule } from '../settings/settings.module';
+import { PaginatorComponent } from '../paginator/paginator.component';
 
 @NgModule({
   declarations: [
-    PriceListComponent
+    PriceListComponent,
+    PaginatorComponent
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,32 @@
+<div class="flex justify-content-center flex-wrap">
+    <div class="flex align-items-center justify-content-center">
+        <button pButton 
+            class="p-button-outlined " 
+            icon="pi pi-angle-double-left"
+            (click)="onPageChange('first')"
+            [disabled]="!index || index < 1"
+        ></button>
+    </div>
+    <div class="flex align-items-center justify-content-center">
+        <button pButton 
+            class="p-button-outlined " 
+            icon="pi pi-angle-left"
+            (click)="onPageChange('previous')"
+            [disabled]="!index || index < 1"
+        ></button>
+    </div>
+    <div class="flex align-items-center justify-content-center">
+        <button pButton 
+            class="p-button-outlined " 
+            [disabled] = "true"
+        >{{index ? index + 1 : 1}}</button>
+    </div>
+    <div class="flex align-items-center justify-content-center">
+        <button pButton 
+            class="p-button-outlined " 
+            icon="pi pi-angle-right"
+            (click)="onPageChange('next')"
+            [disabled]="isLastPage"
+        ></button>
+    </div>
+</div>
