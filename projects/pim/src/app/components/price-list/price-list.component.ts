@@ -36,14 +36,23 @@ export class PriceListComponent {
   public currentTokenIndex = 0;
   public isTableVisible = false;
   public isLastPage = false;
+  public searchString: string = '';
   private currentUrl: string | undefined;
   private dialog: DynamicDialogRef | undefined;
-  private searchString: string = '';
+
   constructor(private readonly apiService: ApiService,
     private readonly formBuilder: FormBuilder,
     private readonly bannerService: BannerService,
     public dialogService: DialogService
     ){}
+
+
+ /*
+ TODO: zmienic wyszukiwanie
+ przerobienie na contains
+ pobieranie csvki zgodnie z parametrami filtrowania
+ refresh danych w bazie + część backend 
+ */  
 
   ngOnInit(): void {
     if (this.products.length === 0){
@@ -57,7 +66,7 @@ export class PriceListComponent {
 
   
   pageChange(page: string) {
-    const request : PriceListPageRequest = {pageSize: 100, continuationToken: {}}
+    const request : PriceListPageRequest = {pageSize: 100, continuationToken: {}, search: this.getSearchQuery()}
     switch (page) {
       case 'next':
         this.currentTokenIndex++;
@@ -127,12 +136,17 @@ export class PriceListComponent {
   }
 
   public applyFilter( $event : any) {
-    const search = ($event.target as HTMLInputElement).value;
-    this.searchString = `NameShort ge '${search}' and NameShort lt '${search}Z'`
+    this.searchString = ($event.target as HTMLInputElement).value;
+  }
+
+  private getSearchQuery(): string | null {
+    return !!this.searchString.trim() ? `NameShort ge '${this.searchString}' and NameShort lt '${this.searchString}Z'` : null;
   }
 
   public search(): void {
-    const request : PriceListPageRequest = {pageSize: 100, continuationToken: {}, search: this.searchString}
+    this.tableContinuationTokens = ['{}'];
+    this.currentTokenIndex = 0;
+    const request : PriceListPageRequest = {pageSize: 100, continuationToken: {}, search: this.getSearchQuery()};
     this.onPrepareListByPage(request)
   }
 

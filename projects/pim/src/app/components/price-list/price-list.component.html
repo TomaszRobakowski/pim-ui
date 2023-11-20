@@ -52,7 +52,7 @@
                 <span class="p-input-icon-left ml-auto">
                     <i class="pi pi-search"></i>
                     <!--input pInputText type="text" (input)="applyFilterGlobal(dt1, $event, 'contains')" placeholder="Search keyword" /-->
-                    <input pInputText type="text" (input)="applyFilter($event)" placeholder="Search keyword" />
+                    <input pInputText type="text" (input)="applyFilter($event)" placeholder="Search keyword" [value]="searchString" />
                 </span>
                 <button pButton 
                     class="p-button-outlined p-button-outlined--left" 
