@@ -119,15 +119,6 @@ export class PriceListComponent {
      console.log(this.selectedProducts)
   }
 
-  public saveSelectedAsCsv(): void {
-    //saveDataArrayToFile(this.selectedProducts);
-    const ids = this.selectedProducts.map(product => product.id);
-    if (ids){
-      this.apiService.getCsvForSelectedProducts(ids).subscribe();
-    }
-    
-  }
-
   public saveAllAsCsv(): void {
     saveDataArrayToFile(this.products);
   }
@@ -238,7 +229,27 @@ export class PriceListComponent {
         this.bannerService.error(`${message}, Error`);
       },
       complete: () => {}
-    })
+    });
+  }
+
+  public saveSelectedAsCsv(): void {
+    const ids = this.selectedProducts.map(product => product.id);
+    if (ids){
+      this.apiService.getCsvForSelectedProducts(ids).subscribe({
+        next: (response: Blob) => {
+          const [responseType, extension] = getBlobResponseMetaData(response);
+          const fileName =  `PriceList_${getTimestamp()}.${extension}`
+          const file = new File([response], fileName, { type: 'text/csv' });
+          saveAs(file);
+        },
+        error: (e) => {
+          this.apiService.resetLoading();
+          const message = e?.message ?? 'Unexpected error';
+          this.bannerService.error(`${message}, Error`);
+        },
+        complete: () => {}
+      });
+    }
   }
 
   public onStoreFormChange(storeFormData: boolean) : void {

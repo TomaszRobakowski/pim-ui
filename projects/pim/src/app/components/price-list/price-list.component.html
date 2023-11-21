@@ -46,10 +46,10 @@
                 ></pim-paginator>
                 <span class="p-input-icon-right ml-auto">
                     <i class="pi pi-times-circle clear-button" (click)="clearSearch()"></i>
-                    <input pInputText type="text" 
+                    <input pInputText type="text"
                         (keyup.enter)="search()"
                         (input)="applyFilter($event)" 
-                        placeholder="Search keyword" 
+                        placeholder="Starts with... (case sensitive)" 
                         [value]="searchString" />
                 </span>
                 <!--button pButton 
