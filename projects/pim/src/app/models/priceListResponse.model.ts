@@ -3,7 +3,7 @@ import { TableContinuationToken } from "./priceListPageRequest.model";
 
 export interface PriceListResponse {
     products: Product[];
-    continuationToken: TableContinuationToken
-
-
+    continuationToken: TableContinuationToken;
+    totalCount: number;
+    isLastPage: boolean;
 }

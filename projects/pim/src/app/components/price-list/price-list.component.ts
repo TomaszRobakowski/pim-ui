@@ -51,7 +51,8 @@ export class PriceListComponent {
  TODO: zmienic wyszukiwanie
  przerobienie na contains
  pobieranie csvki zgodnie z parametrami filtrowania
- refresh danych w bazie + część backend 
+ refresh danych w bazie + część backend + historia refreshów
+ kasowanie zaznaczeń na życzenie i po downloadzie
  */  
 
   ngOnInit(): void {
@@ -79,6 +80,7 @@ export class PriceListComponent {
     }    
 
     request.continuationToken = this.getTokenByIndex(this.currentTokenIndex);
+    request.pageNumber = this.currentTokenIndex;
 
     this.onPrepareListByPage(request)
   }
@@ -136,7 +138,9 @@ export class PriceListComponent {
   }
 
   private getSearchQuery(): string | null {
-    return !!this.searchString.trim() ? `NameShort ge '${this.searchString}' and NameShort lt '${this.searchString}Z'` : null;
+    return !!this.searchString.trim() ? this.searchString: null;
+
+    // return !!this.searchString.trim() ? `NameShort ge '${this.searchString}' and NameShort lt '${this.searchString}Z'` : null;
   }
 
   public clearSearch(): void {
@@ -148,7 +152,12 @@ export class PriceListComponent {
   }
 
   public search(): void {
-    const request : PriceListPageRequest = {pageSize: 100, continuationToken: {}, search: this.getSearchQuery()};
+    const request : PriceListPageRequest = {
+      pageSize: 100,
+      pageNumber: 0, 
+      continuationToken: {},
+      search: this.getSearchQuery()
+      };
     this.tableContinuationTokens = ['{}'];
     this.currentTokenIndex = 0;
     this.onPrepareListByPage(request)
@@ -201,7 +210,8 @@ export class PriceListComponent {
     this.apiService.getPriceListByPage(request).subscribe({
       next: (response: PriceListResponse) => {
         this.products = response.products;
-        this.updateContinuationToken(response.continuationToken)
+        this.updateContinuationToken(response.continuationToken);
+        this.isLastPage = response.isLastPage;
         this.showAccountDataFrom();
         this.isTableVisible = true;
         this.apiService.resetLoading();
@@ -332,7 +342,8 @@ export class PriceListComponent {
   }
 
   private getTokenByIndex(currentTokenIndex: number): TableContinuationToken {
-    return JSON.parse(this.tableContinuationTokens[currentTokenIndex]);
+    const token = this.tableContinuationTokens[currentTokenIndex]
+    return !!token ? JSON.parse(token) : {}
   }
 
   private onIsLoadingChange(){

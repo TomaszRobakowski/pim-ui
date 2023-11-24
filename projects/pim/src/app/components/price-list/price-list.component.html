@@ -49,7 +49,7 @@
                     <input pInputText type="text"
                         (keyup.enter)="search()"
                         (input)="applyFilter($event)" 
-                        placeholder="Starts with... (case sensitive)" 
+                        placeholder="search for" 
                         [value]="searchString" />
                 </span>
                 <!--button pButton 
@@ -90,7 +90,7 @@
   
 </div>
 
-<pim-paginator *ngIf="!isLoading && isTableVisible" 
+<pim-paginator *ngIf="!isLoading && isTableVisible && currentTokenIndex" 
     [index]="currentTokenIndex"
     [isLastPage]="isLastPage"
     (pageChange)="pageChange($event)">
