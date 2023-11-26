@@ -36,6 +36,9 @@ export class PriceListComponent {
   public currentTokenIndex = 0;
   public isTableVisible = false;
   public isLastPage = false;
+  public pageSize = 0;
+  public totalCount = 0;
+
   public searchString: string = '';
   private currentUrl: string | undefined;
   private dialog: DynamicDialogRef | undefined;
@@ -212,6 +215,8 @@ export class PriceListComponent {
         this.products = response.products;
         this.updateContinuationToken(response.continuationToken);
         this.isLastPage = response.isLastPage;
+        this.totalCount = response.totalCount;
+        this.pageSize = request.pageSize ? request.pageSize : 0;
         this.showAccountDataFrom();
         this.isTableVisible = true;
         this.apiService.resetLoading();

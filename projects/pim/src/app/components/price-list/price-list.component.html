@@ -43,6 +43,8 @@
                 <pim-paginator (pageChange)="pageChange($event)" 
                     [index]="currentTokenIndex"
                     [isLastPage]="isLastPage"
+                    [pageSize]="pageSize"
+                    [totalCount]="totalCount"
                 ></pim-paginator>
                 <span class="p-input-icon-right ml-auto">
                     <i class="pi pi-times-circle clear-button" (click)="clearSearch()"></i>
@@ -93,5 +95,7 @@
 <pim-paginator *ngIf="!isLoading && isTableVisible && currentTokenIndex" 
     [index]="currentTokenIndex"
     [isLastPage]="isLastPage"
+    [pageSize]="pageSize"
+    [totalCount]="totalCount"
     (pageChange)="pageChange($event)">
 </pim-paginator>
