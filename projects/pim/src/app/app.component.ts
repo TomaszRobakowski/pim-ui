@@ -29,7 +29,6 @@ export class AppComponent implements OnInit {
     .pipe(tap(([apiVersion, feVersion]) => {
       this.version = `${apiVersion.version} / ${feVersion.version.major}.${feVersion.version.minor}.${feVersion.release}${this.env} `
     })).subscribe();
-    
   }  
 }
 

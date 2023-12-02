@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 import { PriceListResponse } from '../models/priceListResponse.model';
 import { PriceListPageRequest } from '../models/priceListPageRequest.model';
 import { PriceListFilteredRequest } from '../models/PriceListFilteredRequest';
+import { DictionaryResponse } from '../models/response/dictionaryResponse.model';
 
 
 @Injectable({
@@ -86,7 +87,6 @@ export class ApiService {
         return this.httpClient.post<PriceListResponse>(`${environment.apiAddress}/PriceList/page`, request, options);
     }
 
-
     public getPriceList(request: PriceListRequest) {
         this.isLoading$.next(true);
         const httpHeaders = new HttpHeaders()
@@ -108,4 +108,13 @@ export class ApiService {
         return this.httpClient.get<any>(`${environment.apiAddress}/PriceList/version`, options);
     }
 
+    public getBrandNameDictionary(): Observable<DictionaryResponse> {
+        const httpHeaders = new HttpHeaders()
+        .set('Content-Type', 'application/json')
+        .set('Cache-Control', 'no-cache');
+
+        const options = {headers: httpHeaders};
+
+        return this.httpClient.get<DictionaryResponse>(`${environment.apiAddress}/PriceList/brand-dictionary`, options);
+    }
 }

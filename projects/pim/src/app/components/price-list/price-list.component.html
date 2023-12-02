@@ -47,19 +47,23 @@
                     [totalCount]="totalCount"
                 ></pim-paginator>
                 <span class="p-input-icon-right ml-auto">
-                    <i class="pi pi-times-circle clear-button" (click)="clearSearch()"></i>
+                    <i class="pi pi-times-circle clear-button" (click)="clearSearch('shortName')"></i>
                     <input pInputText type="text"
                         (keyup.enter)="search()"
-                        (input)="applyFilter($event)" 
-                        placeholder="search for" 
-                        [value]="searchString" />
+                        (input)="applyFilter($event, 'shortName')" 
+                        placeholder="search by short name" 
+                        [value]="searchQuery.shortName"
+                        />
                 </span>
-                <!--button pButton 
-                    class="p-button-outlined p-button-outlined--left" 
-                    icon="pi pi-search"
-                    (click)="search()"
-                    >
-                </button-->
+                <span class="p-input-icon-right ml-auto">
+                    <i class="pi pi-times-circle clear-button" (click)="clearSearch('barcode')"></i>
+                    <input pInputText type="text"
+                        (keyup.enter)="search()"
+                        (input)="applyFilter($event,'barcode')" 
+                        placeholder="search by barcode" 
+                        [value]="searchQuery.barcode"
+                        />
+                </span>
                 <button pButton 
                     class="p-button-outlined p-button-outlined--left" 
                     icon="pi pi-cog"
@@ -72,6 +76,7 @@
             <tr>
                 <th style="width: 4rem">
                     <!--p-tableHeaderCheckbox></p-tableHeaderCheckbox-->
+                    <i class="pi pi-times-circle clear-checked" (click)="clearChecked()"></i>
                 </th>
                 <th *ngFor="let col of columns" >
                     {{ col.header }}

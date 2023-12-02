@@ -15,6 +15,8 @@ import { getMockProducts } from './price-list.mock';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ColumnSettingsComponent } from '../settings/column-settings/column-settings.component';
 import { PriceListPageRequest, TableContinuationToken } from '../../models/priceListPageRequest.model';
+import { filter } from 'rxjs';
+import { SearchQuery } from '../../models/search.model';
 
 @Component({
   selector: 'pim-price-list',
@@ -38,8 +40,8 @@ export class PriceListComponent {
   public isLastPage = false;
   public pageSize = 0;
   public totalCount = 0;
-
-  public searchString: string = '';
+  public brandNames: string[] = [];
+  public searchQuery: SearchQuery = { barcode: '', shortName: ''};
   private currentUrl: string | undefined;
   private dialog: DynamicDialogRef | undefined;
 
@@ -66,11 +68,12 @@ export class PriceListComponent {
     //this.currentUrl = `${document.location.protocol}${document.location.hostname}`;
 
     this.onIsLoadingChange();
+    this.getDictionaries();
   }
 
   
   pageChange(page: string) {
-    const request : PriceListPageRequest = {pageSize: 100, continuationToken: {}, search: this.getSearchQuery()}
+    const request : PriceListPageRequest = {pageSize: 100, continuationToken: {}, search: this.searchQuery /*this.getSearchQuery()*/}
     switch (page) {
       case 'next':
         this.currentTokenIndex++;
@@ -136,22 +139,17 @@ export class PriceListComponent {
     table.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
-  public applyFilter( $event : any) {
-    this.searchString = ($event.target as HTMLInputElement).value;
-  }
-
-  private getSearchQuery(): string | null {
-    return !!this.searchString.trim() ? this.searchString: null;
-
-    // return !!this.searchString.trim() ? `NameShort ge '${this.searchString}' and NameShort lt '${this.searchString}Z'` : null;
-  }
-
-  public clearSearch(): void {
-    if (this.searchString.trim() === '') {
-      return;
+  public applyFilter( $event : any, fieldName: string) {
+    switch (fieldName) {
+      case 'shortName':
+        this.searchQuery.shortName = ($event.target as HTMLInputElement).value;
+        return;
+      case 'barcode':
+        this.searchQuery.barcode = ($event.target as HTMLInputElement).value;
+        return;
+      default:
+        return;
     }
-    this.searchString = '';
-    this.search();
   }
 
   public search(): void {
@@ -159,11 +157,29 @@ export class PriceListComponent {
       pageSize: 100,
       pageNumber: 0, 
       continuationToken: {},
-      search: this.getSearchQuery()
+      search: this.searchQuery, //this.getSearchQuery()
       };
     this.tableContinuationTokens = ['{}'];
     this.currentTokenIndex = 0;
     this.onPrepareListByPage(request)
+  }
+
+  public clearChecked() {
+    this.selectedProducts = [];
+  }
+
+  public clearSearch(fieldName: string): void {
+    switch (fieldName) {
+      case 'shortName':
+        this.searchQuery.shortName = '';
+        break
+      case 'barcode':
+        this.searchQuery.barcode = '';
+        break
+      default:
+        return;
+    }
+    this.search();
   }
 
   public onGetDirectList(request: PriceListRequest): void {
@@ -360,4 +376,7 @@ export class PriceListComponent {
     });
   }
 
+  private getDictionaries(): void {
+    this.apiService.getBrandNameDictionary().subscribe(response =>  response?.data ? this.brandNames = response.data : []);
+  }
 }
