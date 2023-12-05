@@ -15,8 +15,8 @@ import { getMockProducts } from './price-list.mock';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ColumnSettingsComponent } from '../settings/column-settings/column-settings.component';
 import { PriceListPageRequest, TableContinuationToken } from '../../models/priceListPageRequest.model';
-import { filter } from 'rxjs';
 import { SearchQuery } from '../../models/search.model';
+import { SelectOption } from '../../models/select-option';
 
 @Component({
   selector: 'pim-price-list',
@@ -40,8 +40,9 @@ export class PriceListComponent {
   public isLastPage = false;
   public pageSize = 0;
   public totalCount = 0;
-  public brandNames: string[] = [];
-  public searchQuery: SearchQuery = { barcode: '', shortName: ''};
+  public brands: SelectOption[] = [];
+  public selectedBrand: SelectOption | undefined = {name: '', code: ''};
+  public searchQuery: SearchQuery = { barcode: '', shortName: '', brandName: ''};
   private currentUrl: string | undefined;
   private dialog: DynamicDialogRef | undefined;
 
@@ -152,12 +153,18 @@ export class PriceListComponent {
     }
   }
 
+  public searchByBrand() {
+    this.searchQuery.brandName = this.selectedBrand?.code;
+    this.selectedBrand = !this.selectedBrand?.code ? undefined : this.selectedBrand
+    this.search();
+  }
+
   public search(): void {
     const request : PriceListPageRequest = {
       pageSize: 100,
       pageNumber: 0, 
       continuationToken: {},
-      search: this.searchQuery, //this.getSearchQuery()
+      search: this.searchQuery, 
       };
     this.tableContinuationTokens = ['{}'];
     this.currentTokenIndex = 0;
@@ -377,6 +384,9 @@ export class PriceListComponent {
   }
 
   private getDictionaries(): void {
-    this.apiService.getBrandNameDictionary().subscribe(response =>  response?.data ? this.brandNames = response.data : []);
+    this.apiService.getBrandNameDictionary()
+    .subscribe(response =>  {
+      response?.data ? this.brands = response.data.map(brand => ({name: !!brand ? brand : '-- remove slection --' , code:brand})) : [];
+    });
   }
 }

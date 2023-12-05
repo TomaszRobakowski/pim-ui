@@ -46,6 +46,9 @@
                     [pageSize]="pageSize"
                     [totalCount]="totalCount"
                 ></pim-paginator>
+                
+                <p-dropdown [options]="brands" [(ngModel)]="selectedBrand" (ngModelChange)="searchByBrand()" placeholder="Select a brand" optionLabel="name"></p-dropdown>
+
                 <span class="p-input-icon-right ml-auto">
                     <i class="pi pi-times-circle clear-button" (click)="clearSearch('shortName')"></i>
                     <input pInputText type="text"

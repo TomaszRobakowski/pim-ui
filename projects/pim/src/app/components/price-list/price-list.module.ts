@@ -8,6 +8,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SettingsModule } from '../settings/settings.module';
 import { PaginatorComponent } from '../paginator/paginator.component';
+import { DropdownModule } from 'primeng/dropdown';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -18,10 +20,12 @@ import { PaginatorComponent } from '../paginator/paginator.component';
     CommonModule,
     ProgressSpinnerModule,
     TableModule,
+    DropdownModule,
     AccountDataFormModule,
     ButtonModule,
     InputTextModule,
-    SettingsModule
+    SettingsModule,
+    FormsModule
   ]
 })
 export class PriceListModule { }
