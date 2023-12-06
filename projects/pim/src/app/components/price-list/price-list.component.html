@@ -48,27 +48,12 @@
                 ></pim-paginator>
                 
                 <p-dropdown [options]="brands" [(ngModel)]="selectedBrand" (ngModelChange)="searchByBrand()" placeholder="Select a brand" optionLabel="name"></p-dropdown>
+                
+                <span class="p-input-icon-right">
+                </span>
 
-                <span class="p-input-icon-right ml-auto">
-                    <i class="pi pi-times-circle clear-button" (click)="clearSearch('shortName')"></i>
-                    <input pInputText type="text"
-                        (keyup.enter)="search()"
-                        (input)="applyFilter($event, 'shortName')" 
-                        placeholder="search by short name" 
-                        [value]="searchQuery.shortName"
-                        />
-                </span>
-                <span class="p-input-icon-right ml-auto">
-                    <i class="pi pi-times-circle clear-button" (click)="clearSearch('barcode')"></i>
-                    <input pInputText type="text"
-                        (keyup.enter)="search()"
-                        (input)="applyFilter($event,'barcode')" 
-                        placeholder="search by barcode" 
-                        [value]="searchQuery.barcode"
-                        />
-                </span>
                 <button pButton 
-                    class="p-button-outlined p-button-outlined--left" 
+                    class="p-button-outlined p-button-outlined--left " 
                     icon="pi pi-cog"
                     (click)="columnSettings()"
                     >
@@ -82,7 +67,20 @@
                     <i class="pi pi-times-circle clear-checked" (click)="clearChecked()"></i>
                 </th>
                 <th *ngFor="let col of columns" >
+                    <span *ngIf="searchByColumn.indexOf(col.header) < 0; else searchInput">
                     {{ col.header }}
+                    </span>
+                    <ng-template #searchInput>
+                        <span class="p-input-icon-right ml-auto">
+                            <i class="pi pi-times-circle clear-button" (click)="clearSearch(col.header)"></i>
+                            <input pInputText type="text"
+                                (keyup.enter)="search()"
+                                (input)="applyFilter($event, col.header)" 
+                                placeholder="search by {{col.header}}" 
+                                id="search-{{col.header}}"
+                                />
+                        </span>
+                    </ng-template>
                 </th>
             </tr>
         </ng-template>

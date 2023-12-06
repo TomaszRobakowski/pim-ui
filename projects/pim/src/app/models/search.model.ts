@@ -1,5 +1,5 @@
 export interface SearchQuery {
-    shortName?: string;
+    nameShort?: string;
     barcode?: string;
     brandName?: string;
 }

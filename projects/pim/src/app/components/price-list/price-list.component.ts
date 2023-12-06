@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { saveAs } from 'file-saver';
 import { getBlobResponseMetaData, getTimestamp } from '../../extensions/fileExtensions';
@@ -24,7 +24,7 @@ import { SelectOption } from '../../models/select-option';
   styleUrls: ['./price-list.component.scss'],
   providers: [DialogService]
 })
-export class PriceListComponent {
+export class PriceListComponent  implements OnInit, AfterViewChecked {
 
   public formGroup: FormGroup | undefined;
   public isLoading = false;
@@ -42,7 +42,8 @@ export class PriceListComponent {
   public totalCount = 0;
   public brands: SelectOption[] = [];
   public selectedBrand: SelectOption | undefined = {name: '', code: ''};
-  public searchQuery: SearchQuery = { barcode: '', shortName: '', brandName: ''};
+  public searchQuery: SearchQuery = { barcode: '', nameShort: '', brandName: ''};
+  public searchByColumn: string[] = ['nameShort','barcode'];
   private currentUrl: string | undefined;
   private dialog: DynamicDialogRef | undefined;
 
@@ -51,6 +52,12 @@ export class PriceListComponent {
     private readonly bannerService: BannerService,
     public dialogService: DialogService
     ){}
+  
+  
+  ngAfterViewChecked(): void {
+    this.setupSearchInputs();
+  }
+  
 
 
  /*
@@ -66,10 +73,9 @@ export class PriceListComponent {
       this.pageChange('first');
     }
     
-    //this.currentUrl = `${document.location.protocol}${document.location.hostname}`;
-
     this.onIsLoadingChange();
     this.getDictionaries();
+    this.setupSearchInputs();
   }
 
   
@@ -142,8 +148,8 @@ export class PriceListComponent {
 
   public applyFilter( $event : any, fieldName: string) {
     switch (fieldName) {
-      case 'shortName':
-        this.searchQuery.shortName = ($event.target as HTMLInputElement).value;
+      case 'nameShort':
+        this.searchQuery.nameShort = ($event.target as HTMLInputElement).value;
         return;
       case 'barcode':
         this.searchQuery.barcode = ($event.target as HTMLInputElement).value;
@@ -177,8 +183,8 @@ export class PriceListComponent {
 
   public clearSearch(fieldName: string): void {
     switch (fieldName) {
-      case 'shortName':
-        this.searchQuery.shortName = '';
+      case 'nameShort':
+        this.searchQuery.nameShort = '';
         break
       case 'barcode':
         this.searchQuery.barcode = '';
@@ -388,5 +394,16 @@ export class PriceListComponent {
     .subscribe(response =>  {
       response?.data ? this.brands = response.data.map(brand => ({name: !!brand ? brand : '-- remove slection --' , code:brand})) : [];
     });
+  }
+
+  private setupSearchInputs(): void {
+    this.searchByColumn.forEach(column => {
+      const valueIndex = Object.keys(this.searchQuery).indexOf(column);
+      const value = Object.values(this.searchQuery)[valueIndex];
+        const input = document.getElementById(`search-${column}`);
+        if (input){
+          (input as HTMLInputElement).value = value.trim()
+        }
+    })
   }
 }
