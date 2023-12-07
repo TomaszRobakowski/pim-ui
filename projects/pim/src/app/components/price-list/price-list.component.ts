@@ -52,7 +52,7 @@ export class PriceListComponent  implements OnInit, AfterViewChecked {
  refresh danych w bazie + część backend + historia refreshów
  kasowanie zaznaczeń na życzenie i po downloadzie
  */
-  
+
   public ngAfterViewChecked(): void {
     this.setupSearchInputs();
   }
@@ -66,7 +66,6 @@ export class PriceListComponent  implements OnInit, AfterViewChecked {
     this.getDictionaries();
     this.setupSearchInputs();
   }
-
   
   public pageChange(page: string): void {
     const request : PriceListPageRequest = {pageSize: 100, continuationToken: {}, search: this.searchQuery /*this.getSearchQuery()*/}

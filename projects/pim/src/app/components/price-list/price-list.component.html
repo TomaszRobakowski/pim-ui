@@ -33,9 +33,11 @@
                     (click)="saveSelectedAsCsv() ">
                 </button>
                 <button *ngIf="selectedProducts.length > 0" pButton 
-                    label="Preview selected data" 
-                    class="p-button-outlined" icon="pi pi-file-excel" 
-                    (click)="showSelectedProducts() ">
+                    label="Preview" 
+                    class="p-button-outlined" icon="pi pi-list" 
+                    (click)="showSelectedProducts()"
+                    [disabled]="true"
+                    >
                 </button>
                 <pim-paginator (pageChange)="pageChange($event)" 
                     [index]="currentPage"
