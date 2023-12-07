@@ -2,14 +2,6 @@
     <p-progressSpinner></p-progressSpinner>
 </div>
 
-<!--pim-account-data-form *ngIf="!isLoading"
-    (action)="onClick($event)"
-    (storeForm)="onStoreFormChange($event)"
-    [formGroup]="formGroup"
-    [isHide]="isAccountDataFormHidden"
->
-</pim-account-data-form-->
-
 <div class="card table-container" *ngIf="!isLoading && isTableVisible">
     <p-table 
         #dt1
@@ -40,8 +32,13 @@
                     class="p-button-outlined" icon="pi pi-file-excel" 
                     (click)="saveSelectedAsCsv() ">
                 </button>
+                <button *ngIf="selectedProducts.length > 0" pButton 
+                    label="Preview selected data" 
+                    class="p-button-outlined" icon="pi pi-file-excel" 
+                    (click)="showSelectedProducts() ">
+                </button>
                 <pim-paginator (pageChange)="pageChange($event)" 
-                    [index]="currentTokenIndex"
+                    [index]="currentPage"
                     [isLastPage]="isLastPage"
                     [pageSize]="pageSize"
                     [totalCount]="totalCount"
@@ -63,7 +60,6 @@
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th style="width: 4rem">
-                    <!--p-tableHeaderCheckbox></p-tableHeaderCheckbox-->
                     <i class="pi pi-times-circle clear-checked" (click)="clearChecked()"></i>
                 </th>
                 <th *ngFor="let col of columns" >
@@ -98,8 +94,8 @@
   
 </div>
 
-<pim-paginator *ngIf="!isLoading && isTableVisible && currentTokenIndex" 
-    [index]="currentTokenIndex"
+<pim-paginator *ngIf="!isLoading && isTableVisible && currentPage" 
+    [index]="currentPage"
     [isLastPage]="isLastPage"
     [pageSize]="pageSize"
     [totalCount]="totalCount"

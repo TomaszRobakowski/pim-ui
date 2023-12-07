@@ -7,6 +7,7 @@ import { BannerService } from './services/banner.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PriceListModule } from './components/price-list/price-list.module';
 import { AppRoutingModule } from './app-routing.module';
+import { FileService } from './services/file.service';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,7 @@ import { AppRoutingModule } from './app-routing.module';
     PriceListModule,
    
   ],
-  providers: [BannerService],
+  providers: [BannerService, FileService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
