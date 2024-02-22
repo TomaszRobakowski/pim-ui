@@ -5,7 +5,7 @@
 <div class="card table-container" *ngIf="!isLoading && isTableVisible">
     <p-table 
         #dt1
-        dataKey="barcode"
+        dataKey="id"
         [columns]="tableColumns" 
         [value]="products" 
         styleClass="p-datatable-striped" 
@@ -32,6 +32,11 @@
                     class="p-button-outlined" icon="pi pi-file-excel" 
                     (click)="saveSelectedAsCsv() ">
                 </button>
+                <button pButton 
+                    label="Select using CSV" 
+                    class="p-button-outlined" icon="pi pi-file-excel" 
+                    (click)="getIdsFromCsv() ">
+                </button>
                 <button *ngIf="selectedProducts.length > 0" pButton 
                     label="Preview" 
                     class="p-button-outlined" icon="pi pi-list" 
@@ -39,6 +44,7 @@
                     [disabled]="true"
                     >
                 </button>
+                <p-checkbox label="Show selected only" [binary]="true" name="showSelected" [(ngModel)]="showSelected" (ngModelChange)="onShowSelectedChange()"></p-checkbox>
                 <pim-paginator (pageChange)="pageChange($event)" 
                     [index]="currentPage"
                     [isLastPage]="isLastPage"

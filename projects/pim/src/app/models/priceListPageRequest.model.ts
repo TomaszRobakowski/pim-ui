@@ -4,7 +4,8 @@ export interface PriceListPageRequest {
     pageSize?: number;
     pageNumber?: number;
     continuationToken?: TableContinuationToken;
-    search?: SearchQuery; //string | null |
+    search?: SearchQuery; 
+    ids?: (string | null)[] | null;
 }
 
 export interface TableContinuationToken {

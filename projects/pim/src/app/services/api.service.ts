@@ -7,6 +7,7 @@ import { PriceListResponse } from '../models/priceListResponse.model';
 import { PriceListPageRequest } from '../models/priceListPageRequest.model';
 import { PriceListFilteredRequest } from '../models/PriceListFilteredRequest';
 import { DictionaryResponse } from '../models/response/dictionaryResponse.model';
+import { ApiVersionModel } from '../models/version.model';
 
 
 @Injectable({
@@ -98,7 +99,7 @@ export class ApiService {
         return this.httpClient.post<PriceListResponse>(`${environment.apiAddress}/PriceList/all`, request, options);
     }
 
-    public getVersion() : Observable<any> {
+    public getVersion() : Observable<ApiVersionModel> {
         const httpHeaders = new HttpHeaders()
         .set('Content-Type', 'text/plain')
         .set('Cache-Control', 'no-cache');

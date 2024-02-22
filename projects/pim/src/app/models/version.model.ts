@@ -7,3 +7,10 @@ export interface VersionModel {
     timestamp: number;
     developer: string;
 }
+
+
+export interface ApiVersionModel {
+    version: string;
+    completedDate: Date;
+    notCompletedDate: Date;
+}

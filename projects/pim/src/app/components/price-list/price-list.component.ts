@@ -34,8 +34,9 @@ export class PriceListComponent  implements OnInit, AfterViewChecked {
   public totalCount = 0;
   public brands: SelectOption[] = [];
   public selectedBrand: SelectOption | undefined = {name: '', code: ''};
-  public searchQuery: SearchQuery = { barcode: '', nameShort: '', brandName: ''};
-  public searchByColumn: string[] = ['nameShort','barcode'];
+  public searchQuery: SearchQuery = { barcode: '', nameShort: '', brandName: '', nameFull: ''};
+  public searchByColumn: string[] = ['nameFull','nameShort','barcode'];
+  public showSelected = false;
   private currentUrl: string | undefined;
   private dialog: DynamicDialogRef | undefined;
 
@@ -81,6 +82,7 @@ export class PriceListComponent  implements OnInit, AfterViewChecked {
     }    
 
     request.pageNumber = this.currentPage;
+    request.ids = this.showSelected ? this.selectedProducts.map(product => product.id) : null;
 
     this.onPrepareListByPage(request)
   }
@@ -90,8 +92,18 @@ export class PriceListComponent  implements OnInit, AfterViewChecked {
     this.dialog.onClose.subscribe((response) => this.actionAfterCloseSettings(response));
   }
 
-  onCheckboxToggle() {
+  public onCheckboxToggle(): void {
      console.log(this.selectedProducts)
+  }
+
+  public onShowSelectedChange(): void {
+    if (this.showSelected) {
+      const selectedIds = this.selectedProducts.map(product => product.id);
+      this.search(selectedIds)
+    } else {
+      this.search();
+    }
+    
   }
 
   public clear(table: Table) {
@@ -110,6 +122,9 @@ export class PriceListComponent  implements OnInit, AfterViewChecked {
       case 'barcode':
         this.searchQuery.barcode = ($event.target as HTMLInputElement).value;
         return;
+      case 'nameFull':
+          this.searchQuery.nameFull = ($event.target as HTMLInputElement).value;
+          return;
       default:
         return;
     }
@@ -121,8 +136,9 @@ export class PriceListComponent  implements OnInit, AfterViewChecked {
     this.search();
   }
 
-  public search(): void {
+  public search(ids: (string | null)[] | null = null): void {
     const request : PriceListPageRequest = {
+      ids: ids,
       pageSize: 100,
       pageNumber: 0, 
       continuationToken: {},
@@ -140,33 +156,17 @@ export class PriceListComponent  implements OnInit, AfterViewChecked {
     switch (fieldName) {
       case 'nameShort':
         this.searchQuery.nameShort = '';
-        break
+        break;
       case 'barcode':
         this.searchQuery.barcode = '';
-        break
+        break;
+        case 'nameFull':
+      this.searchQuery.nameFull = '';
+        break;
       default:
         return;
     }
     this.search();
-  }
-
-  public onPrepareList(request: PriceListRequest): void {
-    this.isTableVisible = false;
-    this.tableColumns = this.getTableColumns();
-
-    this.apiService.getPriceList(request).subscribe({
-      next: (response: PriceListResponse) => {
-        this.products = response.products;
-        this.isTableVisible = true;
-        this.apiService.resetLoading();
-      },
-      error: (e) => {
-        this.apiService.resetLoading();
-        const message = e?.message ?? 'Unexpected error';
-        this.bannerService.error(`${message}, Error`);
-      },
-      complete: () => {}
-    });
   }
 
   public onPrepareListByPage(request: PriceListPageRequest): void {
@@ -198,6 +198,50 @@ export class PriceListComponent  implements OnInit, AfterViewChecked {
   public saveSelectedAsCsv(): void {
     const ids = this.selectedProducts.map(product => product.id);
     this.fileService.getPriceListByProductId(ids);
+  }
+
+  public getIdsFromCsv(): void {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.csv';
+
+    let index = 0;
+    let idIndex = 0;
+    fileInput.addEventListener('change', (event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const contents = e.target?.result as string;
+          const lines = contents.split('\n');
+          lines.forEach((line) => {
+            if (index === 0) {
+              index++;
+              const headers = line.split('\t');
+              idIndex = headers.findIndex(header => header === 'Id');
+              return;
+            }
+            const row = line.split('\t');
+            const id = row[idIndex];
+            const product = this.products.find(product => product.id === id);
+            if (product) {
+              this.selectedProducts.push(product);
+            } else {
+              this.selectedProducts.push({ id: id} as Product);
+            }
+            index++;
+          });
+          if (index > 1) {
+            this.showSelected = true;
+            this.onShowSelectedChange();
+          }
+        };
+        reader.readAsText(file);
+      }
+    });
+
+    fileInput.click();
+
   }
 
   public showSelectedProducts(): void {

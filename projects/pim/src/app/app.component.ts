@@ -18,6 +18,7 @@ export class AppComponent implements OnInit {
   public apiVersion$ = this.apiService.getVersion();
   public version$ = this.httpClient.get<VersionModel>('assets/version/build.json', {responseType: 'json'});
   public version = '';
+  public dbDataUpdate = '';
   public env = environment.production ? '' : ' - local';
   
   ngOnInit(): void {
@@ -27,6 +28,10 @@ export class AppComponent implements OnInit {
   private getVersion() {
     combineLatest([this.apiVersion$, this.version$])
     .pipe(tap(([apiVersion, feVersion]) => {
+      this.dbDataUpdate = `${apiVersion.completedDate}`;
+      if (apiVersion?.notCompletedDate > apiVersion.completedDate) {
+        this.dbDataUpdate += `/ ${apiVersion.notCompletedDate}`;
+      }
       this.version = `${apiVersion.version} / ${feVersion.version.major}.${feVersion.version.minor}.${feVersion.release}${this.env} `
     })).subscribe();
   }  

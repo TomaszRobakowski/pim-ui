@@ -10,6 +10,7 @@ import { SettingsModule } from '../settings/settings.module';
 import { PaginatorComponent } from '../paginator/paginator.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { FormsModule } from '@angular/forms';
     ButtonModule,
     InputTextModule,
     SettingsModule,
-    FormsModule
+    FormsModule,
+    CheckboxModule
   ]
 })
 export class PriceListModule { }
